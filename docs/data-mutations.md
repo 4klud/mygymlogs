@@ -336,7 +336,76 @@ export async function deleteWorkoutAction(data: DeleteWorkoutInput) {
 
 ---
 
-## 6. Key Principles Summary
+## 6. Navigation and Redirects
+
+### Client-Side Redirects Only
+
+**CRITICAL: Server actions MUST NOT use the `redirect()` function.**
+
+Redirects should be handled client-side after the server action resolves.
+
+```typescript
+// ❌ WRONG: Server-side redirect
+"use server";
+
+import { redirect } from 'next/navigation';
+
+export async function createItemAction(data: CreateItemInput) {
+  const validated = schema.parse(data);
+  const item = await createItem(validated);
+
+  redirect('/dashboard'); // WRONG!
+}
+```
+
+```typescript
+// ✅ CORRECT: Return redirect URL, handle client-side
+"use server";
+
+import { revalidatePath } from 'next/cache';
+
+export async function createItemAction(data: CreateItemInput) {
+  try {
+    const validated = schema.parse(data);
+    const item = await createItem(validated);
+
+    revalidatePath('/dashboard');
+
+    return {
+      success: true,
+      item,
+      redirectUrl: '/dashboard' // Return URL for client to handle
+    };
+  } catch (error) {
+    // Handle errors
+  }
+}
+```
+
+```typescript
+// ✅ CORRECT: Client-side redirect handling
+"use client";
+
+const onSubmit = async (data: FormData) => {
+  const result = await createItemAction(data);
+
+  if (result.success && result.redirectUrl) {
+    window.location.href = result.redirectUrl; // Client-side redirect
+  } else if (!result.success) {
+    setError(result.error);
+  }
+};
+```
+
+**Why?**
+- Server actions should return data, not control navigation
+- Client-side redirects provide better error handling
+- Separates concerns: server handles data, client handles UI/navigation
+- Avoids confusion with error handling (redirect throws an error)
+
+---
+
+## 7. Key Principles Summary
 
 1. **Data Layer Separation**: All database operations in `src/data` directory helpers
 2. **Server Actions Location**: Colocated `actions.ts` files with `"use server"` directive
@@ -344,6 +413,7 @@ export async function deleteWorkoutAction(data: DeleteWorkoutInput) {
 4. **Validation**: ALL inputs validated with Zod schemas
 5. **Error Handling**: Proper try/catch with Zod error differentiation
 6. **Cache Revalidation**: Use `revalidatePath()` or `revalidateTag()` after mutations
+7. **Client-Side Redirects**: Return redirect URLs, never use `redirect()` in server actions
 
 ---
 
@@ -355,6 +425,7 @@ export async function deleteWorkoutAction(data: DeleteWorkoutInput) {
 4. Skipping error handling
 5. Forgetting cache revalidation
 6. Putting server actions in random files instead of `actions.ts`
+7. Using `redirect()` function in server actions (use client-side redirects instead)
 
 ---
 

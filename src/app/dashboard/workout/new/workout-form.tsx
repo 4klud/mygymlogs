@@ -48,16 +48,14 @@ export default function WorkoutForm() {
     try {
       const result = await createWorkoutAction(data);
 
-      if (result && !result.success) {
+      if (result.success && result.redirectUrl) {
+        window.location.href = result.redirectUrl;
+      } else if (!result.success) {
         setError(result.error || 'Failed to create workout');
+        setIsSubmitting(false);
       }
     } catch (err) {
-      // Redirect errors are expected and should be re-thrown
-      if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) {
-        throw err;
-      }
       setError('An unexpected error occurred');
-    } finally {
       setIsSubmitting(false);
     }
   };

@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@clerk/nextjs/server';
 import { createWorkout } from '@/data/workouts';
 
@@ -31,7 +31,13 @@ export async function createWorkoutAction(data: CreateWorkoutInput) {
       startedAt: validated.startedAt,
     });
 
-    redirect(`/dashboard?date=${validated.startedAt.toISOString()}`);
+    revalidatePath('/dashboard');
+
+    return {
+      success: true,
+      workout,
+      redirectUrl: `/dashboard?date=${validated.startedAt.toISOString()}`
+    };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return {
@@ -40,7 +46,6 @@ export async function createWorkoutAction(data: CreateWorkoutInput) {
         issues: error.issues
       };
     }
-    // Re-throw redirect errors
-    throw error;
+    return { success: false, error: 'Failed to create workout' };
   }
 }
