@@ -99,3 +99,21 @@ export async function getWorkouts(userId: string) {
     },
   });
 }
+
+/**
+ * Create a new workout
+ * @param data - Workout creation data
+ * @returns The created workout
+ */
+export async function createWorkout(data: {
+  userId: string;
+  name: string;
+  startedAt: Date;
+}) {
+  const [workout] = await db
+    .insert(workouts)
+    .values(data)
+    .returning();
+
+  return workout;
+}

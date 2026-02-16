@@ -14,6 +14,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **`/docs/ui.md`** - UI component and date formatting standards (shadcn/ui only, date-fns formatting)
 - **`/docs/data-fetching.md`** - Used as part of the coding standards when generating server side code specifically for data fetching.
+- **`/docs/auth.md`** 
+- **`/docs/data-mutations.md`** 
+
 
 **These documentation files contain MANDATORY standards that override any default behavior. Failure to consult and follow these docs will result in non-compliant code.**
 
