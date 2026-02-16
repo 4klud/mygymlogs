@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ CRITICAL: Documentation-First Development
+
+**BEFORE generating ANY code, you MUST:**
+
+1. **Check the `/docs` directory** for relevant documentation files
+2. **Read and follow** the standards outlined in applicable docs
+3. **Adhere strictly** to all guidelines in those documents
+
+### Available Documentation
+
+- **`/docs/ui.md`** - UI component and date formatting standards (shadcn/ui only, date-fns formatting)
+
+**These documentation files contain MANDATORY standards that override any default behavior. Failure to consult and follow these docs will result in non-compliant code.**
+
 ## Project Overview
 
 This is a Next.js 16.1.6 application using React 19, TypeScript, and Tailwind CSS v4. The project is set up with the App Router architecture.
