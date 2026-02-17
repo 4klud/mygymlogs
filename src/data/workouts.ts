@@ -117,3 +117,30 @@ export async function createWorkout(data: {
 
   return workout;
 }
+
+/**
+ * Update an existing workout
+ * @param workoutId - The workout ID
+ * @param userId - The authenticated user's ID (for security)
+ * @param data - Fields to update
+ * @returns The updated workout, or null if not found/unauthorized
+ */
+export async function updateWorkout(
+  workoutId: string,
+  userId: string,
+  data: { name?: string; startedAt?: Date }
+) {
+  const [workout] = await db
+    .update(workouts)
+    .set(data)
+    .where(
+      // 🚨 CRITICAL: Filter by BOTH workoutId AND userId
+      and(
+        eq(workouts.id, workoutId),
+        eq(workouts.userId, userId)
+      )
+    )
+    .returning();
+
+  return workout ?? null;
+}

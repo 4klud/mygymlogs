@@ -14,8 +14,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **`/docs/ui.md`** - UI component and date formatting standards (shadcn/ui only, date-fns formatting)
 - **`/docs/data-fetching.md`** - Used as part of the coding standards when generating server side code specifically for data fetching.
-- **`/docs/auth.md`** 
-- **`/docs/data-mutations.md`** 
+- **`/docs/auth.md`**
+- **`/docs/data-mutations.md`**
+- **`/docs/server-components.md`** - Server Component standards, including the mandatory rule that `params` and `searchParams` must be typed as Promises and awaited (Next.js 16 requirement).
+- **`/docs/routing.md`** - Routing standards: all app routes under `/dashboard`, route protection via Next.js middleware using Clerk, navigation conventions.
 
 
 **These documentation files contain MANDATORY standards that override any default behavior. Failure to consult and follow these docs will result in non-compliant code.**
